@@ -36,17 +36,30 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
-
         $permissions = [
-            'category.view',
-            'category.create',
-            'category.update',
-            'category.delete',
+            'categories.index',
+            'categories.create',
+            'categories.show',
+            'categories.update',
+            'categories.delete',
 
-            'unit.view',
-            'unit.create',
-            'unit.update',
-            'unit.delete',
+            'sub-categories.index',
+            'sub-categories.create',
+            'sub-categories.show',
+            'sub-categories.update',
+            'sub-categories.delete',
+
+            'brands.index',
+            'brands.create',
+            'brands.show',
+            'brands.update',
+            'brands.delete',
+
+            'units.index',
+            'units.create',
+            'units.show',
+            'units.update',
+            'units.delete',
         ];
 
         $permissions = collect($permissions)->map(function ($permission) {

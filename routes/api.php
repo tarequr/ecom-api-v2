@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\API\AuthenticationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\AuthenticationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post("/v2/login", [AuthenticationController::class, 'login']);
+
+Route::group(['prefix' => 'v2', 'middleware' => ['auth:sanctum']], function() {
+    Route::get('categories', [CategoryController::class, 'index']);
+    Route::post('categories', [CategoryController::class, 'create']);
+});
