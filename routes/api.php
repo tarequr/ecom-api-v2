@@ -24,5 +24,5 @@ Route::post("/v2/login", [AuthenticationController::class, 'login']);
 
 Route::group(['prefix' => 'v2', 'middleware' => ['auth:sanctum']], function() {
     Route::apiResource('categories', CategoryController::class);
-    // Route::apiResource('sub-categories', CategoryController::class);
+    Route::apiResource('sub-categories', CategoryController::class);
 });
