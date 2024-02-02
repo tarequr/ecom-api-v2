@@ -17,6 +17,9 @@ class CategoryController extends Controller
         $this->category = $categoryRepository;
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         if (auth()->user()->cannot('categories.index')) {
@@ -29,7 +32,18 @@ class CategoryController extends Controller
         return CategoryResource::collection($data);
     }
 
-    public function create(CategoryRequest $request)
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(CategoryRequest $request)
     {
         if (auth()->user()->cannot('categories.create')) {
             return response()->json([
@@ -37,10 +51,13 @@ class CategoryController extends Controller
             ], 403);
         }
 
-        return  $this->category->create($request->validated());
+        return  $this->category->create($request->validated(), $request->hasFile('image') ? $request->file('image') : null);
     }
 
-    public function find($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
         if (auth()->user()->cannot('categories.show')) {
             return response()->json([
@@ -52,7 +69,18 @@ class CategoryController extends Controller
         return new CategoryResource($item);
     }
 
-    public function update(CategoryRequest $request, $id)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(CategoryRequest $request, string $id)
     {
         if (auth()->user()->cannot('categories.update')) {
             return response()->json([
@@ -60,12 +88,15 @@ class CategoryController extends Controller
             ], 403);
         }
 
-        return  $this->category->update($request->validated(), $id);
+        return  $this->category->update($request->validated(), $id ,$request->hasFile('image') ? $request->file('image') : null);
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        if (auth()->user()->cannot('categories.destroy')) {
+        if (auth()->user()->cannot('categories.delete')) {
             return response()->json([
                 'message' => 'Unothorized, you don\'t have access'
             ], 403);

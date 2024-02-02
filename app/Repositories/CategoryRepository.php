@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Category;
+use Illuminate\Support\Str;
 
 class CategoryRepository implements CategoryInterface
 {
@@ -20,21 +21,40 @@ class CategoryRepository implements CategoryInterface
 
     public function find($id)
     {
-        return $this->category->find($id);
+        return $this->category->findOrFail($id);
     }
 
-    public function create(array $data)
+    public function create(array $data, $image)
     {
+        if ($image) {
+            $imageName = 'IMG_' . date('YmdHi') . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('upload/category'), $imageName);
+            $data['image'] = $imageName;
+        }
+
+        $data['slug'] = Str::slug($data['name']);
+
         return $this->category->create($data);
     }
 
-    public function update(array $data, $id)
+    public function update(array $data, $id, $image)
     {
-        return $this->category->find($id)->update($data);
+        $category = $this->category->findOrFail($id);
+
+        if ($image) {
+            @unlink(public_path('upload/category/'.$category->image));
+            $imageName = 'IMG_' . date('YmdHi') . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('upload/category'), $imageName);
+            $data['image'] = $imageName;
+        }
+
+        $data['slug'] = Str::slug($data['name']);
+
+        return $category->update($data);
     }
 
     public function destroy($id)
     {
-        return $this->category->find($id)->destroy();
+        return $this->category->findOrFail($id)->delete();
     }
 }

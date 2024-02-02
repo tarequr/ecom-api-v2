@@ -72,10 +72,11 @@ class DatabaseSeeder extends Seeder
         Permission::insert($permissions->toArray());
         Role::create(['name' => 'Super Admin'])->givePermissionTo(Permission::all());
         Role::create(['name' => 'Admin'])->givePermissionTo([
-            'category.view',
-            'category.create',
-            'category.update',
-            'category.delete',
+            'categories.index',
+            'categories.create',
+            'categories.show',
+            'categories.update',
+            'categories.delete',
         ]);
 
         // User::find(1)->assignRole(['Super Admin','Admin']); //assign multiple role to super admin

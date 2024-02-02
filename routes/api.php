@@ -23,6 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post("/v2/login", [AuthenticationController::class, 'login']);
 
 Route::group(['prefix' => 'v2', 'middleware' => ['auth:sanctum']], function() {
-    Route::get('categories', [CategoryController::class, 'index']);
-    Route::post('categories', [CategoryController::class, 'create']);
+    Route::apiResource('categories', CategoryController::class);
+    // Route::apiResource('sub-categories', CategoryController::class);
 });
