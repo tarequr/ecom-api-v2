@@ -2,17 +2,34 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\UnitRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UnitResource;
+use App\Repositories\UnitRepository;
 
 class UnitController extends Controller
 {
+    protected $unit;
+
+    public function __construct(UnitRepository $unitRepository)
+    {
+        $this->unit = $unitRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        if (auth()->user()->cannot('units.index')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        $data =  $this->unit->all();
+        return UnitResource::collection($data);
     }
 
     /**
@@ -26,9 +43,15 @@ class UnitController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UnitRequest $request)
     {
-        //
+        if (auth()->user()->cannot('units.create')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        return  $this->unit->create($request->validated());
     }
 
     /**
@@ -36,7 +59,14 @@ class UnitController extends Controller
      */
     public function show(string $id)
     {
-        //
+        if (auth()->user()->cannot('units.show')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        $item = $this->unit->find($id);
+        return new UnitResource($item);
     }
 
     /**
@@ -50,9 +80,15 @@ class UnitController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UnitRequest $request, string $id)
     {
-        //
+        if (auth()->user()->cannot('units.update')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        return  $this->unit->update($request->validated(), $id);
     }
 
     /**
@@ -60,6 +96,12 @@ class UnitController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if (auth()->user()->cannot('units.delete')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        return $this->unit->destroy($id);
     }
 }
