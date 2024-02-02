@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\AuthenticationController;
+use App\Http\Controllers\API\BrandController;
+use App\Http\Controllers\API\SubCategoryController;
+use App\Http\Controllers\API\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,5 +27,7 @@ Route::post("/v2/login", [AuthenticationController::class, 'login']);
 
 Route::group(['prefix' => 'v2', 'middleware' => ['auth:sanctum']], function() {
     Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('sub-categories', CategoryController::class);
+    Route::apiResource('sub-categories', SubCategoryController::class);
+    Route::apiResource('brands', BrandController::class);
+    Route::apiResource('units', UnitController::class);
 });
