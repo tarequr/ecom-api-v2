@@ -2,17 +2,34 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\BrandRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\BrandResource;
+use App\Repositories\BrandRepository;
 
 class BrandController extends Controller
 {
+    protected $brand;
+
+    public function __construct(BrandRepository $brandRepository)
+    {
+        $this->brand = $brandRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        if (auth()->user()->cannot('brands.index')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        $data =  $this->brand->all();
+        return BrandResource::collection($data);
     }
 
     /**
@@ -26,9 +43,15 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BrandRequest $request)
     {
-        //
+        if (auth()->user()->cannot('brands.create')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        return  $this->brand->create($request->validated(), $request->hasFile('image') ? $request->file('image') : null);
     }
 
     /**
@@ -36,7 +59,14 @@ class BrandController extends Controller
      */
     public function show(string $id)
     {
-        //
+        if (auth()->user()->cannot('brands.show')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        $item = $this->brand->find($id);
+        return new BrandResource($item);
     }
 
     /**
@@ -50,9 +80,15 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BrandRequest $request, string $id)
     {
-        //
+        if (auth()->user()->cannot('brands.update')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        return  $this->brand->update($request->validated(), $id ,$request->hasFile('image') ? $request->file('image') : null);
     }
 
     /**
@@ -60,6 +96,12 @@ class BrandController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if (auth()->user()->cannot('brands.delete')) {
+            return response()->json([
+                'message' => 'Unothorized, you don\'t have access'
+            ], 403);
+        }
+
+        return $this->brand->destroy($id);
     }
 }
