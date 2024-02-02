@@ -9,7 +9,7 @@ class SubCategoryRepository implements SubCategoryInterface
 {
     protected $subCategory;
 
-    public function __construct(SubCategory $category)
+    public function __construct(SubCategory $subCategory)
     {
         $this->subCategory = $subCategory;
     }
